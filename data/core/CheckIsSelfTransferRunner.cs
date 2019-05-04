@@ -9,23 +9,23 @@ namespace core {
         class CheckIsSelfTransferRunner {
 
             public async Task<bool> isSelfTransferAsync(Itinerary it) {
-                Console.WriteLine(await getUrl(it));
+                string page = await getUrl(it);
  
-                return false;
+                return page.Contains("Self-transfer");
             }
 
-            public async Task<string> getUrl(Itinerary it) {         
-                string firstPage = await it.Deeplink.GetStringAsync();     
-                string redirectToken = firstPage.Substring(firstPage.IndexOf("var redirect_id = ") + "var redirect_id = ".Length + 1, 36);
+            public async Task<string> getUrl(Itinerary it) {        
+                Console.WriteLine(it.Deeplink);  
 
-                string deeplink = Uri.UnescapeDataString(it.Deeplink);  
-                string redirectUrl = "https://www.skyscanner.net/skippy_api"
-                     + deeplink.Substring(deeplink.IndexOf("www.skyscanner.net") + "www.skyscanner.net".Length);
-                redirectUrl = redirectUrl.Substring(0, redirectUrl.IndexOf("flights") + "flights".Length) + "?redirect_id=" + redirectToken;
-                Console.WriteLine(redirectUrl);
-                string finalUrl = (await redirectUrl
+                string firstPage = await it.Deeplink.GetStringAsync();   
+                string callbackUrl = firstPage.Substring(firstPage.IndexOf("callback_url: \"") + "callback_url: \"".Length);
+                callbackUrl = "https://www.skyscanner.net" + callbackUrl.Substring(0, callbackUrl.IndexOf("\""));
+                Console.WriteLine(callbackUrl);
+
+                string finalUrl = (await callbackUrl
                         .WithHeader("User-Agent", "Mozilla/5.0")
                         .GetJsonAsync()).url;
+                Console.WriteLine(finalUrl);
 
                 return finalUrl;
             }      

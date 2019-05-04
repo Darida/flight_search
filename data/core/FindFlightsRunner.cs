@@ -14,11 +14,12 @@ namespace core
     class FindFlightsRunner
     {     
         public static readonly Storage STORAGE = Storage.STORAGE;
+        private readonly Random RND = new Random();
 
         public async Task run(string originPlace, string destinationPlace, DateTime outboundDate, DateTime inboundDate)
         {
             string location = "";
-            for(int delay = 1; location == ""; delay *= 2) {
+            for(int delay = 10; location == ""; delay = (int) (delay * (RND.NextDouble() + 1.5))) {
                 try {
                     location = (await "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0"
                         .WithHeader("X-RapidAPI-Host", "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com")
@@ -45,7 +46,7 @@ namespace core
             }
             
             SkyResponse response = new SkyResponse();
-            for(int delay = 1; response.Status != "UpdatesComplete"; delay *= 2) {
+            for(int delay = 5; response.Status != "UpdatesComplete"; delay = (int) (delay * (RND.NextDouble() + 1.5))) {
                 if(delay != 1) Console.WriteLine($"Incomplete {location}. Waiting {delay}s before re-request.");
                 await Task.Delay(TimeSpan.FromSeconds(delay));
                 try {

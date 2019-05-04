@@ -72,7 +72,9 @@ namespace core {
                             LongInboundLegUUID  = longIt.InboundLegUUID,
                             Price  = shortIt.Price + longIt.Price,
                             ShortDeeplink = shortIt.Deeplink,
-                            LongDeeplink = longIt.Deeplink
+                            LongDeeplink = longIt.Deeplink,
+                            ShortAgent = shortIt.Agent,
+                            LongAgent = longIt.Agent
                         };
                         packs.Add(pack);
                     }                    
@@ -83,7 +85,7 @@ namespace core {
                 .Where(it => it.Price < 4000)
                 .Where(it => getLongStayDuration(it) > TimeSpan.FromDays(21))
                 .Where(it => getShortStayDuration(it) > TimeSpan.FromDays(6))
-                .Where(it => getVacationDays(it) < 8)
+                //.Where(it => getVacationDays(it) < 8)
                 .Where(it => STORAGE.legs[it.LongInboundLegUUID].Arrival < new DateTime(2019, 6, 22))
                 .OrderBy(it => it.Price).ToList();
         }
@@ -107,7 +109,8 @@ namespace core {
         }
 
         private string toString(Pack pack) {
-            return $"{pack.Price}$ at {STORAGE.legs[pack.OutboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.ShortInboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.LongInboundLegUUID].Departure.ToShortDateString()}. " 
+            return $"{pack.Price}$ from {pack.LongAgent}/{pack.ShortAgent} "
+                + $"{STORAGE.legs[pack.OutboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.ShortInboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.LongInboundLegUUID].Departure.ToShortDateString()}. " 
                 + $"{STORAGE.legs[pack.OutboundLegUUID].SegmentUUIDs.Count - 1} & {STORAGE.legs[pack.ShortInboundLegUUID].SegmentUUIDs.Count - 1} & {STORAGE.legs[pack.LongInboundLegUUID].SegmentUUIDs.Count - 1} stops. "
                 + $"{STORAGE.legs[pack.OutboundLegUUID].DurationSpan} & {STORAGE.legs[pack.ShortInboundLegUUID].DurationSpan} & {STORAGE.legs[pack.LongInboundLegUUID].DurationSpan} duration. ";
         }

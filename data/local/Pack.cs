@@ -3,12 +3,15 @@ using System.Collections.ObjectModel;
 
 namespace local {
         class Pack {
-            public String UUID { get; set; }
-            public String OutboundLegUUID { get; set; }
-            public String ShortInboundLegUUID { get; set; }
-            public String LongInboundLegUUID { get; set; }
+            public string UUID { get; set; }
+            public string OutboundLegUUID { get; set; }
+            public string ShortInboundLegUUID { get; set; }
+            public string LongInboundLegUUID { get; set; }
             public double Price { get; set; }
-            public String ShortDeeplink { get; set; }
-            public String LongDeeplink { get; set; }            
+
+            public string ShortDeeplink { get; set; }
+            public string LongDeeplink { get; set; } 
+            public string ShortAgent { get; set; }       
+            public string LongAgent { get; set; }    
         }
 }
