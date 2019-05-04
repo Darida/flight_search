@@ -36,9 +36,12 @@ namespace core
 
                         DateTime lastUpdated = Storage.STORAGE.shortItineraries.Values
                             .Where(it => airport.Contains(Storage.STORAGE.legs[it.OutboundLegUUID].Origin))
+                            .Where(it => Storage.STORAGE.legs[it.OutboundLegUUID].Departure >= goThereDate) 
                             .Where(it => (Storage.STORAGE.legs[it.OutboundLegUUID].Departure - goThereDate).TotalHours < 24) 
+                            .Where(it => Storage.STORAGE.legs[it.InboundLegUUID].Departure >= returnDate) 
                             .Where(it => (Storage.STORAGE.legs[it.InboundLegUUID].Departure - returnDate).TotalHours < 24) 
                             .Select(it => it.LastUpdated)
+                            .Concat(new DateTime[]{ DateTime.MinValue })
                             .Max();
                         if((DateTime.Now - lastUpdated) < MIN_TIME_TO_REREQUEST) 
                             continue;
@@ -55,6 +58,7 @@ namespace core
                             .Where(it => (Storage.STORAGE.legs[it.OutboundLegUUID].Departure - goThereDate).TotalHours < 24) 
                             .Where(it => (Storage.STORAGE.legs[it.InboundLegUUID].Departure - returnDate).TotalHours < 24) 
                             .Select(it => it.LastUpdated)
+                            .Concat(new DateTime[]{ DateTime.MinValue })
                             .Max();
                         if((DateTime.Now - lastUpdated) < MIN_TIME_TO_REREQUEST) 
                             continue;
