@@ -1,0 +1,11 @@
+D:\Projects\momondo\bin\Debug\netcoreapp2.2\momondo.deps.json
+D:\Projects\momondo\bin\Debug\netcoreapp2.2\momondo.runtimeconfig.json
+D:\Projects\momondo\bin\Debug\netcoreapp2.2\momondo.runtimeconfig.dev.json
+D:\Projects\momondo\bin\Debug\netcoreapp2.2\momondo.dll
+D:\Projects\momondo\bin\Debug\netcoreapp2.2\momondo.pdb
+D:\Projects\momondo\obj\Debug\netcoreapp2.2\momondo.csprojAssemblyReference.cache
+D:\Projects\momondo\obj\Debug\netcoreapp2.2\momondo.csproj.CoreCompileInputs.cache
+D:\Projects\momondo\obj\Debug\netcoreapp2.2\momondo.AssemblyInfoInputs.cache
+D:\Projects\momondo\obj\Debug\netcoreapp2.2\momondo.AssemblyInfo.cs
+D:\Projects\momondo\obj\Debug\netcoreapp2.2\momondo.dll
+D:\Projects\momondo\obj\Debug\netcoreapp2.2\momondo.pdb
