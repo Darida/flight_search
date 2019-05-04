@@ -23,7 +23,7 @@ namespace momondo
         { 
             Runner runner = new Runner();
 
-             for(int dayInMay = 17; dayInMay <= 31; dayInMay++) {       
+             for(int dayInMay = 29; dayInMay <= 31; dayInMay++) {       
                 Console.WriteLine($"Processing {dayInMay} May"); 
                 List<Task> tasks = new List<Task>(); 
                 foreach(String airport in new string[] {"SFO-sky", "OAK-sky", "SJC-sky"})  {

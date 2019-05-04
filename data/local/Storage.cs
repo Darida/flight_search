@@ -64,8 +64,17 @@ namespace local {
             report();
         }
 
-        public void report() {               
-            List<Pack> all = packs.Values.OrderBy(it => it.Price).ToList();
+        public void report() {    
+            Console.WriteLine($"Looking for best options...");           
+            List<Pack> all = packs
+                .Values
+                .Where(it => it.Price < 4000)
+                .Where(it => getLongStayDuration(it) > TimeSpan.FromDays(25))
+                .Where(it => getShortStayDuration(it) > TimeSpan.FromDays(6))
+                .Where(it => getVacationDays(it) < 8)
+                .Where(it => legs[it.LongInboundLegUUID].Arrival < new DateTime(2019, 6, 22))
+                .OrderBy(it => it.Price).ToList();
+
             while(all.Count > 0) {
                 Pack optimal = all.FirstOrDefault();
                 Console.WriteLine($"Optimal (from {all.Count}): {toString(optimal)}");
@@ -80,15 +89,11 @@ namespace local {
                             legs[optimal.LongInboundLegUUID].DurationSpan.TotalHours);
                 int maxDuration = (int)Math.Floor(current);  
 
-                all = packs.Values
+                all = all
                     .Where(it => legs[it.OutboundLegUUID].DurationSpan.TotalHours < maxDuration)
                     .Where(it => legs[it.ShortInboundLegUUID].DurationSpan.TotalHours < maxDuration)
                     .Where(it => legs[it.LongInboundLegUUID].DurationSpan.TotalHours < maxDuration)
-                    .Where(it => getLongStayDuration(it) > TimeSpan.FromDays(20))
-                    .Where(it => getShortStayDuration(it) > TimeSpan.FromDays(6))
-                    .Where(it => getVacationDays(it) < 8)
-                    .Where(it => legs[it.LongInboundLegUUID].Arrival < new DateTime(2019, 6, 22))
-                    .OrderBy(it => it.Price).ToList();  
+                    .ToList();  
             }
         }
 
