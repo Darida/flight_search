@@ -47,7 +47,7 @@ namespace core
             
             SkyResponse response = new SkyResponse();
             for(int delay = 10; response.Status != "UpdatesComplete"; delay = (int) (delay * (RND.NextDouble() + 1.5))) {
-                if(delay != 1) Console.WriteLine($"Incomplete {location}. Waiting {delay}s before re-request.");
+                Console.WriteLine($"Incomplete {location}. Waiting {delay}s before re-request.");
                 await Task.Delay(TimeSpan.FromSeconds(delay));
                 try {
                     response = await $"https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/{location}"
