@@ -6,24 +6,25 @@ using Flurl.Http;
 using System.Net.Http;
 using Newtonsoft.Json;
 using skyscanner;
-using converters;
 using local;
 using System.Collections.Generic;
 
-namespace momondo
+namespace core
 {
     class Program
     {
-        static void Main1(string[] args) {
+        static void Main(string[] args) {
             Storage.STORAGE.loadFromDist();
-            Storage.STORAGE.report();
+            Analysis analysis = new Analysis();
+            analysis.makeMatch();
+            analysis.report();
         }
 
-        static void Main(string[] args)
+        static void Main1(string[] args)
         { 
-            Runner runner = new Runner();
+            FindFlightsRunner runner = new FindFlightsRunner();
 
-             for(int dayInMay = 29; dayInMay <= 31; dayInMay++) {       
+             for(int dayInMay = 17; dayInMay <= 17; dayInMay++) {       
                 Console.WriteLine($"Processing {dayInMay} May"); 
                 List<Task> tasks = new List<Task>(); 
                 foreach(String airport in new string[] {"SFO-sky", "OAK-sky", "SJC-sky"})  {

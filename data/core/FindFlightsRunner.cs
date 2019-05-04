@@ -7,12 +7,11 @@ using Flurl.Http;
 using System.Net.Http;
 using Newtonsoft.Json;
 using skyscanner;
-using converters;
 using local;
 
-namespace momondo
+namespace core
 {
-    class Runner
+    class FindFlightsRunner
     {     
         public static readonly Storage STORAGE = Storage.STORAGE;
 
