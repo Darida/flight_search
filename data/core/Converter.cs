@@ -6,18 +6,24 @@ using System.Collections.Generic;
 
 namespace core {
     class Converter {
-        Dictionary<int, skyscanner.Carrier> carriers = new Dictionary<int, skyscanner.Carrier>();
-        Dictionary<int, skyscanner.Place> places = new Dictionary<int, skyscanner.Place>();
-        Dictionary<int, string> segments = new Dictionary<int, string>();
+        IDictionary<int, skyscanner.Carrier> carriers = new Dictionary<int, skyscanner.Carrier>();
+        IDictionary<int, skyscanner.Place> places = new Dictionary<int, skyscanner.Place>();
+        IDictionary<int, skyscanner.Agent> agents = new Dictionary<int, skyscanner.Agent>();
+        IDictionary<int, string> segments = new Dictionary<int, string>();
 
-        public void remember(Collection<skyscanner.Carrier> carriers) {
+        public void remember(ICollection<skyscanner.Carrier> carriers) {
             foreach(skyscanner.Carrier carrier in carriers) {
                 this.carriers[carrier.Id] = carrier;
             }
         }
-        public void remember(Collection<skyscanner.Place> places) {
+        public void remember(ICollection<skyscanner.Place> places) {
             foreach(skyscanner.Place place in places) {
                 this.places[place.Id] = place;
+            }
+        }
+        public void remember(ICollection<skyscanner.Agent> agents) {
+            foreach(skyscanner.Agent agent in agents) {
+                this.agents[agent.Id] = agent;
             }
         }
 
@@ -57,6 +63,7 @@ namespace core {
                 OutboundLegUUID = other.OutboundLegId,
                 InboundLegUUID = other.InboundLegId,
                 Price = other.PricingOptions.Select(o => o.Price).Min(),
+                Agent = agents[other.PricingOptions.OrderBy(o => o.Price).First().Agents.First()].Name,
                 Deeplink = other.PricingOptions.OrderBy(o => o.Price).First().DeeplinkUrl
             };
             string uuid = $"{that.OutboundLegUUID}/{that.InboundLegUUID}";

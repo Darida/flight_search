@@ -1,10 +1,10 @@
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace skyscanner {
         class Itinerary {
-            public String OutboundLegId { get; set; }
-            public String InboundLegId { get; set; }
-            public Collection<PricingOption> PricingOptions { get; set; }
+            public string OutboundLegId { get; set; }
+            public string InboundLegId { get; set; }
+            public ICollection<PricingOption> PricingOptions { get; set; }
         }
 }

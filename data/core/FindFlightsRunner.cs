@@ -65,6 +65,7 @@ namespace core
             Converter converter = new Converter();
             converter.remember(response.Carriers);
             converter.remember(response.Places);
+            converter.remember(response.Agents);
             foreach (var segment in response.Segments)
             {
                 STORAGE.save(converter.convert(segment));

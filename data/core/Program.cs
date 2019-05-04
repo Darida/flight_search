@@ -13,14 +13,15 @@ namespace core
 {
     class Program
     {
-        static void Main(string[] args) {
+        static async Task Main1(string[] args) {
             Storage.STORAGE.loadFromDist();
             Analysis analysis = new Analysis();
             analysis.makeMatch();
-            analysis.report();
+            //analysis.report();
+            await new CheckIsSelfTransferRunner().isSelfTransferAsync(Storage.STORAGE.shortItineraries.Values.First());
         }
 
-        static void Main1(string[] args)
+        static void Main(string[] args)
         { 
             FindFlightsRunner runner = new FindFlightsRunner();
 

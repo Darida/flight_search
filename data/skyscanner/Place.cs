@@ -4,8 +4,8 @@ namespace skyscanner {
         class Place {
             public int Id { get; set; }
             public int ParentId { get; set; }
-            public String Code { get; set; }
-            public String Type { get; set; }
-            public String Name { get; set; }
+            public string Code { get; set; }
+            public string Type { get; set; }
+            public string Name { get; set; }
         }
 }

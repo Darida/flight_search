@@ -1,11 +1,10 @@
 using System;
 
 namespace skyscanner {
-        class Carrier {
+        class Agent {
             public int Id { get; set; }
-            public string Code { get; set; }
             public string Name { get; set; }
             public Uri ImageUrl { get; set; }
-            public string DisplayCode { get; set; }
+            public string Type { get; set; }
         }
 }

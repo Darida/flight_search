@@ -9,6 +9,7 @@ namespace local {
             public String InboundLegUUID { get; set; }
 
             public double Price { get; set; }
+            public string Agent { get; set; }
             public String Deeplink { get; set; }
             public DateTime LastUpdated {get; set; }
         }
