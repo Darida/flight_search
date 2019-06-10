@@ -49,12 +49,12 @@ namespace core {
         public void makeMatch() {
             packs.Clear();
 
-            ILookup<string, Itinerary> longGroup = STORAGE.longItineraries.Values
+            ILookup<string, Itinerary> longGroup = STORAGE.itineraries.Values
                 .Where(it => it.Price < 3000)
                 .Where(it => STORAGE.legs[it.OutboundLegUUID].DurationSpan.TotalHours < 24)
                 .Where(it => STORAGE.legs[it.InboundLegUUID].DurationSpan.TotalHours < 24)
                 .ToLookup(it => it.OutboundLegUUID);
-            ILookup<string, Itinerary> shortGroup = STORAGE.shortItineraries.Values
+            ILookup<string, Itinerary> shortGroup = STORAGE.itineraries.Values
                 .Where(it => it.Price < 3000)
                 .Where(it => STORAGE.legs[it.OutboundLegUUID].DurationSpan.TotalHours < 24)
                 .Where(it => STORAGE.legs[it.InboundLegUUID].DurationSpan.TotalHours < 24)

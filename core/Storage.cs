@@ -9,13 +9,12 @@ using local;
 
 namespace core {
     class Storage {
-        private static readonly string FOLDER = @"d:\flight";        
+        private static readonly string FOLDER = @"d:\tmp";        
         public static readonly Storage STORAGE = new Storage();
 
         public IDictionary<string, Segment> segments = new Dictionary<string, Segment>();
         public IDictionary<string, Leg> legs = new Dictionary<string, Leg>();
-        public IDictionary<string, Itinerary> longItineraries = new Dictionary<string, Itinerary>();
-        public IDictionary<string, Itinerary> shortItineraries = new Dictionary<string, Itinerary>();
+        public IDictionary<string, Itinerary> itineraries = new Dictionary<string, Itinerary>();
 
         public void save(Segment segment) {
             segments[segment.UUID] = segment;
@@ -28,11 +27,7 @@ namespace core {
         }
         public void save(Itinerary itinerary) {
             itinerary.LastUpdated = DateTime.Now;
-            if(legs[itinerary.InboundLegUUID].Departure - legs[itinerary.OutboundLegUUID].Departure <= TimeSpan.FromDays(14)) {
-                shortItineraries[itinerary.UUID] = itinerary;
-            } else {
-                longItineraries[itinerary.UUID] = itinerary;
-            }
+            itineraries[itinerary.UUID] = itinerary;
         }
 
         Storage() {
@@ -43,8 +38,7 @@ namespace core {
             try {
                 segments = JsonConvert.DeserializeObject<ConcurrentDictionary<string, Segment>>(System.IO.File.ReadAllText($@"{FOLDER}\segments.txt"));
                 legs = JsonConvert.DeserializeObject<ConcurrentDictionary<string, Leg>>(System.IO.File.ReadAllText($@"{FOLDER}\legs.txt"));
-                longItineraries = JsonConvert.DeserializeObject<ConcurrentDictionary<string, Itinerary>>(System.IO.File.ReadAllText($@"{FOLDER}\long_itineraries.txt"));
-                shortItineraries = JsonConvert.DeserializeObject<ConcurrentDictionary<string, Itinerary>>(System.IO.File.ReadAllText($@"{FOLDER}\short_itineraries.txt"));
+                itineraries = JsonConvert.DeserializeObject<ConcurrentDictionary<string, Itinerary>>(System.IO.File.ReadAllText($@"{FOLDER}\itineraries.txt"));
             } catch {
                 // Ignore
             }
@@ -53,8 +47,19 @@ namespace core {
         public void saveToDisk() {
             System.IO.File.WriteAllText($@"{FOLDER}\segments.txt", JsonConvert.SerializeObject(segments));
             System.IO.File.WriteAllText($@"{FOLDER}\legs.txt", JsonConvert.SerializeObject(legs));
-            System.IO.File.WriteAllText($@"{FOLDER}\long_itineraries.txt", JsonConvert.SerializeObject(longItineraries));
-            System.IO.File.WriteAllText($@"{FOLDER}\short_itineraries.txt", JsonConvert.SerializeObject(shortItineraries));
+            System.IO.File.WriteAllText($@"{FOLDER}\itineraries.txt", JsonConvert.SerializeObject(itineraries));
+        }
+
+        public DateTime GetLastUpdated(DateTime dateGoThere, DateTime dateReturn, string airportFrom, string airportTo)
+        {
+            return itineraries.Values
+                .Where(it => legs[it.OutboundLegUUID].Origin == airportFrom)
+                .Where(it => legs[it.OutboundLegUUID].Destination == airportTo)
+                .Where(it => legs[it.OutboundLegUUID].Departure.Date == dateGoThere)
+                .Where(it => legs[it.InboundLegUUID].Departure.Date == dateReturn)
+                .Select(it => it.LastUpdated)
+                .Concat(new DateTime[] { DateTime.MinValue })
+                .Max();
         }
     }
 }
