@@ -16,7 +16,7 @@ namespace core
         public static readonly Storage STORAGE = Storage.STORAGE;
         private readonly Random RND = new Random();
 
-        public async Task run(string originPlace, string destinationPlace, DateTime outboundDate, DateTime inboundDate)
+        public async Task run(string originPlace, string destinationPlace, DateTime outboundDate, DateTime inboundDate, int adults)
         {
             string location = "";
             for(int delay = 10; location == ""; delay = (int) (delay * (RND.NextDouble() + 1.5))) {
@@ -37,7 +37,7 @@ namespace core
                             destinationPlace = destinationPlace,
                             outboundDate = outboundDate.ToString("yyyy-MM-dd"),
                             inboundDate = inboundDate.ToString("yyyy-MM-dd"),
-                            adults = 1
+                            adults = adults
                         })).Headers.Location.AbsolutePath;                    
                 } catch (Exception ex) {
                     Console.WriteLine($"Request {originPlace}/{destinationPlace} {outboundDate.ToShortDateString()}/{inboundDate.ToShortDateString()} failed: {ex}");

@@ -27,12 +27,10 @@ namespace core
 
         private static readonly string[] AIRPORTS_FROM = new string[] {"SFO-sky", "OAK-sky", "SJC-sky"};
         private static readonly string[] AIRPORTS_TO = new string[] {"LIH-sky"};
-
         private static readonly DateTime START_GO_THERE = new DateTime(2019, 6, 24);
         private static readonly DateTime END_GO_THERE = new DateTime(2019, 7, 1);   
-
         private static readonly DateTime START_GO_BACK = new DateTime(2019, 7, 1);
-        private static readonly DateTime END_GO_BACK = new DateTime(2019, 7, 7);   
+        private static readonly DateTime END_GO_BACK = new DateTime(2019, 7, 7);
 
         public class SearchParam {
             public DateTime DateGoThere {get; set; }
@@ -68,7 +66,7 @@ namespace core
                 if((DateTime.Now - lastUpdated) < MIN_TIME_TO_REREQUEST) 
                     continue;
 
-                Task task = runner.run(param.AirportFrom, param.AirportTo, param.DateGoThere, param.DateReturn);  
+                Task task = runner.run(param.AirportFrom, param.AirportTo, param.DateGoThere, param.DateReturn, 2);  
                 tasks.Add(task);
                 
                 if((DateTime.Now - lastSaved) > SAVE_INTERVAL) {
