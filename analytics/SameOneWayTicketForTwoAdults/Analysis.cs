@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using local;
+using core;
 
-namespace core {
+namespace analytics.SameOneWayTicketForTwoAdults {
     class Analysis {      
         public static readonly Storage STORAGE = Storage.STORAGE;
         public List<Pack> packs = new List<Pack>();
@@ -28,20 +29,20 @@ namespace core {
                 Pack optimal = all.FirstOrDefault();
                 Console.WriteLine($"Optimal (from {all.Count}): {toString(optimal)}");
                 Console.WriteLine(optimal.OutboundLegUUID);
-                Console.WriteLine(optimal.ShortInboundLegUUID);
-                Console.WriteLine(optimal.LongInboundLegUUID);
+                Console.WriteLine(optimal.FirstInboundLegUUID);
+                Console.WriteLine(optimal.SecondInboundLegUUID);
                             
                 double current = //legs[optimal.OutboundLegUUID].DurationSpan.TotalHours;
                         Math.Max(Math.Max(
                             STORAGE.legs[optimal.OutboundLegUUID].DurationSpan.TotalHours,
-                            STORAGE.legs[optimal.ShortInboundLegUUID].DurationSpan.TotalHours),
-                            STORAGE.legs[optimal.LongInboundLegUUID].DurationSpan.TotalHours);
+                            STORAGE.legs[optimal.FirstInboundLegUUID].DurationSpan.TotalHours),
+                            STORAGE.legs[optimal.SecondInboundLegUUID].DurationSpan.TotalHours);
                 int maxDuration = (int)Math.Floor(current);  
 
                 all = all
                     .Where(it => STORAGE.legs[it.OutboundLegUUID].DurationSpan.TotalHours < maxDuration)
-                    .Where(it => STORAGE.legs[it.ShortInboundLegUUID].DurationSpan.TotalHours < maxDuration)
-                    .Where(it => STORAGE.legs[it.LongInboundLegUUID].DurationSpan.TotalHours < maxDuration)
+                    .Where(it => STORAGE.legs[it.FirstInboundLegUUID].DurationSpan.TotalHours < maxDuration)
+                    .Where(it => STORAGE.legs[it.SecondInboundLegUUID].DurationSpan.TotalHours < maxDuration)
                     .ToList();  
             }
         }
@@ -68,13 +69,13 @@ namespace core {
                         Pack pack = new Pack() {
                             UUID = $"{shortIt.OutboundLegUUID} / {shortIt.InboundLegUUID} / {longIt.InboundLegUUID}",
                             OutboundLegUUID = shortIt.OutboundLegUUID,
-                            ShortInboundLegUUID  = shortIt.InboundLegUUID,
-                            LongInboundLegUUID  = longIt.InboundLegUUID,
+                            FirstInboundLegUUID  = shortIt.InboundLegUUID,
+                            SecondInboundLegUUID  = longIt.InboundLegUUID,
                             Price  = shortIt.Price + longIt.Price,
-                            ShortDeeplink = shortIt.Deeplink,
-                            LongDeeplink = longIt.Deeplink,
-                            ShortAgent = shortIt.Agent,
-                            LongAgent = longIt.Agent
+                            FirstDeeplink = shortIt.Deeplink,
+                            SecondDeeplink = longIt.Deeplink,
+                            FirstAgent = shortIt.Agent,
+                            SecondAgent = longIt.Agent
                         };
                         packs.Add(pack);
                     }                    
@@ -86,21 +87,21 @@ namespace core {
                 .Where(it => getLongStayDuration(it) > TimeSpan.FromDays(21))
                 .Where(it => getShortStayDuration(it) > TimeSpan.FromDays(6))
                 //.Where(it => getVacationDays(it) < 8)
-                .Where(it => STORAGE.legs[it.LongInboundLegUUID].Arrival < new DateTime(2019, 6, 22))
+                .Where(it => STORAGE.legs[it.SecondInboundLegUUID].Arrival < new DateTime(2019, 6, 22))
                 .OrderBy(it => it.Price).ToList();
         }
 
         private TimeSpan getLongStayDuration(Pack pack) {
-            return STORAGE.legs[pack.LongInboundLegUUID].Departure - STORAGE.legs[pack.OutboundLegUUID].Arrival;
+            return STORAGE.legs[pack.SecondInboundLegUUID].Departure - STORAGE.legs[pack.OutboundLegUUID].Arrival;
         }
 
         private TimeSpan getShortStayDuration(Pack pack) {
-            return STORAGE.legs[pack.ShortInboundLegUUID].Departure - STORAGE.legs[pack.OutboundLegUUID].Arrival;
+            return STORAGE.legs[pack.FirstInboundLegUUID].Departure - STORAGE.legs[pack.OutboundLegUUID].Arrival;
         }
 
         private int getVacationDays(Pack pack) {
             int vacations = 0;
-            for(DateTime day = STORAGE.legs[pack.OutboundLegUUID].Departure; day <= STORAGE.legs[pack.ShortInboundLegUUID].Arrival; day = day.Add(TimeSpan.FromDays(1))) {
+            for(DateTime day = STORAGE.legs[pack.OutboundLegUUID].Departure; day <= STORAGE.legs[pack.FirstInboundLegUUID].Arrival; day = day.Add(TimeSpan.FromDays(1))) {
                 if(day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday)
                     continue;
                 vacations++;
@@ -109,10 +110,10 @@ namespace core {
         }
 
         private string toString(Pack pack) {
-            return $"{pack.Price}$ from {pack.LongAgent}/{pack.ShortAgent} "
-                + $"{STORAGE.legs[pack.OutboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.ShortInboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.LongInboundLegUUID].Departure.ToShortDateString()}. " 
-                + $"{STORAGE.legs[pack.OutboundLegUUID].SegmentUUIDs.Count - 1} & {STORAGE.legs[pack.ShortInboundLegUUID].SegmentUUIDs.Count - 1} & {STORAGE.legs[pack.LongInboundLegUUID].SegmentUUIDs.Count - 1} stops. "
-                + $"{STORAGE.legs[pack.OutboundLegUUID].DurationSpan} & {STORAGE.legs[pack.ShortInboundLegUUID].DurationSpan} & {STORAGE.legs[pack.LongInboundLegUUID].DurationSpan} duration. ";
+            return $"{pack.Price}$ from {pack.SecondAgent}/{pack.FirstAgent} "
+                + $"{STORAGE.legs[pack.OutboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.FirstInboundLegUUID].Departure.ToShortDateString()} / {STORAGE.legs[pack.SecondInboundLegUUID].Departure.ToShortDateString()}. " 
+                + $"{STORAGE.legs[pack.OutboundLegUUID].SegmentUUIDs.Count - 1} & {STORAGE.legs[pack.FirstInboundLegUUID].SegmentUUIDs.Count - 1} & {STORAGE.legs[pack.SecondInboundLegUUID].SegmentUUIDs.Count - 1} stops. "
+                + $"{STORAGE.legs[pack.OutboundLegUUID].DurationSpan} & {STORAGE.legs[pack.FirstInboundLegUUID].DurationSpan} & {STORAGE.legs[pack.SecondInboundLegUUID].DurationSpan} duration. ";
         }
     }
 }

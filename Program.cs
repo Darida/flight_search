@@ -16,7 +16,7 @@ namespace core
 
         static async Task Main1(string[] args) {
             Storage.STORAGE.loadFromDist();
-            Analysis analysis = new Analysis();
+            analytics.SameOneWayTicketForTwoAdults.Analysis analysis = new analytics.SameOneWayTicketForTwoAdults.Analysis();
             analysis.makeMatch();
             analysis.report();
             //await new CheckIsSelfTransferRunner().isSelfTransferAsync(Storage.STORAGE.shortItineraries.Values.OrderBy(it => it.Price).First());
