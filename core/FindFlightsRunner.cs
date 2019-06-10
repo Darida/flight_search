@@ -33,11 +33,12 @@ namespace core
                             country = "US",
                             currency = "USD",
                             locale = "en-US",
-                            originPlace = originPlace,
-                            destinationPlace = destinationPlace,
+                            originPlace = originPlace + "-sky",
+                            destinationPlace = destinationPlace + "-sky",
                             outboundDate = outboundDate.ToString("yyyy-MM-dd"),
                             inboundDate = inboundDate.ToString("yyyy-MM-dd"),
-                            adults = adults
+                            adults = adults,
+                            groupPricing = true
                         })).Headers.Location.AbsolutePath;                    
                 } catch (Exception ex) {
                     Console.WriteLine($"Request {originPlace}/{destinationPlace} {outboundDate.ToShortDateString()}/{inboundDate.ToShortDateString()} failed: {ex}");

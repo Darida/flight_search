@@ -34,7 +34,7 @@ namespace core {
             loadFromDist();
         }
 
-        public void loadFromDist() {
+        private void loadFromDist() {
             try {
                 segments = JsonConvert.DeserializeObject<ConcurrentDictionary<string, Segment>>(System.IO.File.ReadAllText($@"{FOLDER}\segments.txt"));
                 legs = JsonConvert.DeserializeObject<ConcurrentDictionary<string, Leg>>(System.IO.File.ReadAllText($@"{FOLDER}\legs.txt"));
